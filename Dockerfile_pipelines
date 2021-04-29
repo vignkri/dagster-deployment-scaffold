@@ -21,6 +21,8 @@ COPY workflows/ opt/dagster/app
 
 WORKDIR /opt/dagster/app
 
+RUN pip install -r requirements.txt
+
 # Run dagster gRPC server on port 4000
 
 EXPOSE 4000
