@@ -1,22 +1,12 @@
 
-from dagster import pipeline, repository, schedule, solid
-
-
-@solid
-def hello(_):
-    return 1
-
-
-@pipeline
-def my_pipeline():
-    hello()
-
-
-@schedule(cron_schedule="* * * * *", pipeline_name="my_pipeline", execution_timezone="US/Central")
-def my_schedule(_context):
-    return {}
+from dagster import repository
+from co2emissions import my_pipeline, my_schedule, my_pipeline_2
 
 
 @repository
 def deploy_docker_repository():
     return [my_pipeline, my_schedule]
+
+@repository
+def scheduled_runs():
+    return [my_pipeline_2]
