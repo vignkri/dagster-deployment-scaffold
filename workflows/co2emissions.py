@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import requests
+
 from dagster import (
     pipeline,
     repository,
@@ -7,26 +9,26 @@ from dagster import (
 )
 
 
-@solid
-def hello(_):
-    return "World"
+def get_package_information(package_id: str):
+    """Get package information
+    """
+    base_url = "http://api.energidataservice.dk/{}"
+    package_information_url = base_url.format("package_show")
+    response = requests.request("GET", package_information_url,
+        params={"id": package_id, "include_tracking": True}}
+    return response
 
 
 @solid
-def world(_):
-    return "Hello"
-
-
-@schedule(cron_schedule="* * * * *", pipeline_name="my_pipeline", execution_timezone="UTC")
-def my_schedule(_context):
-    return {}
-
-
-@pipeline
-def my_pipeline():
-    return "{} {}".format(hello(), world())
-
+def get_last_modified_information(_):
+    response = get_package_information(package_id="co2emis")
+    if response.ok:
+        print(response.json())
+        return response
+    else:
+        return False
 
 @pipeline
-def my_pipeline_2():
-    return "{} {}".format(hello(), world())
+def co2_emissions_pipeline():
+    response = get_last_modified_information()
+    print(response)
