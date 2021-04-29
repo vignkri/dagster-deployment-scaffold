@@ -8,6 +8,10 @@ __pycache__/
 # C extensions
 *.so
 
+# ENV and other files
+.htpasswd
+*.env
+
 # Distribution / packaging
 .Python
 develop-eggs/
