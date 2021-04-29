@@ -7,21 +7,27 @@ run_coordinator:
   class: QueuedRunCoordinator
 
 run_launcher:
-  module: dagster_docker
-  class: DockerRunLauncher
-  config:
-    env_vars:
-      - DAGSTER_POSTGRES_USER
-      - DAGSTER_POSTGRES_PASSWORD
-      - DAGSTER_POSTGRES_DB
-    network: docker_example_network
+  module: dagster.core.launcher
+  class: DefaultRunLauncher
+
+# run_launcher:
+#   module: dagster_docker
+#   class: DockerRunLauncher
+#   config:
+#     env_vars:
+#       - DAGSTER_POSTGRES_HOST
+#       - DAGSTER_POSTGRES_USER
+#       - DAGSTER_POSTGRES_PASSWORD
+#       - DAGSTER_POSTGRES_DB
+#     network: docker_example_network
 
 run_storage:
   module: dagster_postgres.run_storage
   class: PostgresRunStorage
   config:
     postgres_db:
-      hostname: docker_example_postgresql
+      hostname:
+        env: DAGSTER_POSTGRES_HOST 
       username:
         env: DAGSTER_POSTGRES_USER
       password:
@@ -35,7 +41,8 @@ schedule_storage:
   class: PostgresScheduleStorage
   config:
     postgres_db:
-      hostname: docker_example_postgresql
+      hostname: 
+        env: DAGSTER_POSTGRES_HOST 
       username:
         env: DAGSTER_POSTGRES_USER
       password:
@@ -49,7 +56,8 @@ event_log_storage:
   class: PostgresEventLogStorage
   config:
     postgres_db:
-      hostname: docker_example_postgresql
+      hostname: 
+        env: DAGSTER_POSTGRES_HOST 
       username:
         env: DAGSTER_POSTGRES_USER
       password:
