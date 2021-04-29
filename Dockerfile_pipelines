@@ -17,15 +17,14 @@ RUN mkdir -p $DAGSTER_HOME
 COPY dagster.yaml $DAGSTER_HOME
 
 # Add repository code
+COPY workflows/ opt/dagster/app
 
 WORKDIR /opt/dagster/app
-
-COPY repo.py /opt/dagster/app
 
 # Run dagster gRPC server on port 4000
 
 EXPOSE 4000
 
-# CMD allows this to be overridden from run launchers or executors that want
+# CMD allows this to be overridden from run ålaunchers or executors that want
 # to run other commands against your repository
 CMD ["dagster", "api", "grpc", "-h", "0.0.0.0", "-p", "4000", "-f", "repo.py"]
