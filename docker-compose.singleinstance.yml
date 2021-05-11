@@ -1,0 +1,78 @@
+version: "3.7"
+
+services:
+  # This service runs the postgres DB used by dagster for run storage, schedule storage,
+  # and event log storage.
+  docker_example_postgresql:
+    image: postgres:11
+    container_name: docker_example_postgresql
+    expose:
+      - "5432"
+    ports:
+      - "5555:5432"
+    environment:
+      POSTGRES_USER: "postgres_user"
+      POSTGRES_PASSWORD: "postgres_password"
+      POSTGRES_DB: "postgres_db"
+    networks:
+      - docker_example_network
+
+  # This service runs dagit, which loads the pipelines from the user code container.
+  # Since our instance uses the QueuedRunCoordinator, any runs submitted from dagit will be put on
+  # a queue and later dequeued and launched by dagster-daemon.
+  docker_example_dagit:
+    build:
+      context: .
+      dockerfile: ./Dockerfile_singleinstance
+    container_name: docker_singleinstance_dagit
+    # entrypoint:
+    #   - dagit
+    #   - -h
+    #   - "127.0.0.1"
+    #   - -p
+    #   - "3000"
+    #   - -w
+    #   - workspace.yaml
+    expose: 
+      - "80"
+    ports:
+      - "8080:80"
+    environment:
+      DAGSTER_POSTGRES_USER: "postgres_user"
+      DAGSTER_POSTGRES_PASSWORD: "postgres_password"
+      DAGSTER_POSTGRES_DB: "postgres_db"
+      DAGSTER_POSTGRES_HOST: "docker_example_postgresql"
+    volumes: # Make docker client accessible so we can terminate containers from dagit
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - docker_example_network
+    depends_on:
+      - docker_example_postgresql
+
+  # This service runs the dagster-daemon process, which is responsible for taking runs
+  # off of the queue and launching them, as well as creating runs from schedules or sensors.
+  docker_example_daemon:
+    build:
+      context: .
+      dockerfile: ./Dockerfile_dagit
+    entrypoint:
+      - dagster-daemon
+      - run
+    container_name: docker_example_daemon
+    restart: on-failure
+    environment:
+      DAGSTER_POSTGRES_USER: "postgres_user"
+      DAGSTER_POSTGRES_PASSWORD: "postgres_password"
+      DAGSTER_POSTGRES_DB: "postgres_db"
+      DAGSTER_POSTGRES_HOST: "docker_example_postgresql"
+    volumes: # Make docker client accessible so we can launch containers using host docker
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - docker_example_network
+    depends_on:
+      - docker_example_postgresql
+
+networks:
+  docker_example_network:
+    driver: bridge
+    name: docker_example_network
