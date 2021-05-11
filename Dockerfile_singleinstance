@@ -19,7 +19,8 @@ ENV DAGSTER_HOME=/opt/dagster/dagster_home/
 
 RUN mkdir -p $DAGSTER_HOME
 
-COPY dagster.yaml workspace_local.yaml $DAGSTER_HOME
+COPY dagster.yaml $DAGSTER_HOME
+COPY workspace_local.yaml $DAGSTER_HOME/workspace.yaml
 COPY ./dagit/nginx/nginx.conf /etc/nginx/conf.d/default.conf
 COPY ./dagit/.htpasswd /etc/apache2/.htpasswd
 COPY ./dagit/entrypoint.sh $DAGSTER_HOME
