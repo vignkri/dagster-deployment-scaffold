@@ -4,7 +4,7 @@ REGION=eu-north-1
 VERSION=$1
 AWS_PATH=$2
 
-docker build . -f Dockerfile_dagit -t dagster/dagit_service:$VERSION
+docker build . -f Dockerfile_singeinstance -t dagster/dagit_service:$VERSION
 
 aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $AWS_PATH
 
