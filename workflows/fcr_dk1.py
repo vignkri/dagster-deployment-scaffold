@@ -83,7 +83,7 @@ def get_last_12h_data(context, response: Dict, metadata_response: Dict):
 
 
 @pipeline
-def co2_emissions_pipeline():
+def fcr_dk1_pipeline():
     get_last_12h_data(
         get_timestamp_of_latest_fcr_data(),
         get_metadata_timestamps()
