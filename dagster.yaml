@@ -4,7 +4,7 @@ scheduler:
 
 run_coordinator:
   module: dagster.core.run_coordinator
-  class: QueuedRunCoordinator
+  class: DefaultRunCoordinator
 
 run_launcher:
   module: dagster.core.launcher
