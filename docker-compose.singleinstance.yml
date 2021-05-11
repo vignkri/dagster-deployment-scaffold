@@ -54,7 +54,7 @@ services:
   docker_example_daemon:
     build:
       context: .
-      dockerfile: ./Dockerfile_dagit
+      dockerfile: ./Dockerfile_singleinstance
     entrypoint:
       - dagster-daemon
       - run
