@@ -3,7 +3,7 @@
 set -e 
 
 # Start the nginx service
-nginx
+# nginx
 service nginx start
 
 # Make sure the dagit interface is up on port 3000
