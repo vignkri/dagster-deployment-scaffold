@@ -3,7 +3,6 @@ load_from:
   # Each entry here corresponds to a service in the docker-compose file that exposes pipelines.
   - python_file:
       relative_path: repo.py
-      working_directory: workflows/
   # - grpc_server:
   #     host: ec2-13-51-235-28.eu-north-1.compute.amazonaws.com
   #     port: 4000
